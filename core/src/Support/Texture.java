@@ -15,7 +15,7 @@ public class Texture {
         this.x = x;
         this.y = y;
         this.width = width;
-        this.height = height;
+        this.height = texture.getHeight() * (width / texture.getWidth());;
     }
 
     public void draw(SpriteBatch batch){

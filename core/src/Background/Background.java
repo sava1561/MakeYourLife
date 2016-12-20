@@ -523,6 +523,11 @@ public class Background {
             }
 //            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus)
 //                bus.ontouch(player.position.x, player.width, player.position.y, arrow);
+            if(market.drawJobs){
+                for (int i = 0; i < market.jobs.size(); i++) {
+                    market.jobs.get(i).ontouch(player.position.x, player.width, player.position.y);
+                }
+            }
             if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital)
                 market.ontouch(player.position.x, player.width, player.position.y, arrow);
             if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital)

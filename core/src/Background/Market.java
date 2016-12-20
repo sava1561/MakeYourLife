@@ -52,7 +52,7 @@ public class Market {
         call = new Variants(player.position.x + player.width + player.height / 4, go.y + go.height + go.height / 2, 8 * player.height / 4, "circles/call.png");
         internet = new Variants(call.x, Robb1.y, 8 * player.height / 4, "circles/internet.png");
         jobs = new ArrayList<Job>();
-        jobs.add(new Job(new Random().nextInt(4),x));
+        jobs.add(new Job(new Random().nextInt(4),x+width/2));
     }
 
     public void draw(SpriteBatch batch,boolean winter) {
@@ -89,18 +89,20 @@ public class Market {
     }
 
     public void ontouch(float x, float width, float y, Arrows arrows) {
-        if (Gdx.input.justTouched()) {
-            touchpos.x = Gdx.input.getX() + x - Gdx.graphics.getWidth() / 2 + width / 2;
-            touchpos.y = Gdx.input.getY();
-            if (touchpos.x >= this.x && touchpos.x <= this.x + this.width && touchpos.y >= Gdx.graphics.getHeight() - this.height - this.y && touchpos.y <= Gdx.graphics.getHeight() - y) {
-                if (varExists) {
-                    varExists = false;
-                    touchpos.set(0, 0);
-                } else {
-                    varExists = true;
-                    touchpos.set(0, 0);
-                    arrows.back = arrows.previous;
-                    arrows.previous = "middle";
+        if(!drawJobs) {
+            if (Gdx.input.justTouched()) {
+                touchpos.x = Gdx.input.getX() + x - Gdx.graphics.getWidth() / 2 + width / 2;
+                touchpos.y = Gdx.input.getY();
+                if (touchpos.x >= this.x && touchpos.x <= this.x + this.width && touchpos.y >= Gdx.graphics.getHeight() - this.height - this.y && touchpos.y <= Gdx.graphics.getHeight() - y) {
+                    if (varExists) {
+                        varExists = false;
+                        touchpos.set(0, 0);
+                    } else {
+                        varExists = true;
+                        touchpos.set(0, 0);
+                        arrows.back = arrows.previous;
+                        arrows.previous = "middle";
+                    }
                 }
             }
         }
