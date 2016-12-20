@@ -27,7 +27,7 @@ import roadActions.Car;
 public class Background {
     public Random random;
     public int moneyStolen = 0, moneyStolen1;
-    public int situation;
+    public static int situation;
     public Notification n1;
     public boolean winter = false;
     public Tip tip;
@@ -1689,7 +1689,14 @@ public class Background {
                     }
                 }
                 if (player.reachedMarket(market.x, market.width)) {
-                    market.drawJobs = true;
+                    if(market.jobs.size() != 0) {
+                        market.drawJobs = true;
+                    }else{
+                        situation = 11;
+                        Notification.exists = true;
+                        Notification.exists1 = true;
+                        pause();
+                    }
                     arrow.previous = "middle";
                     player.movingRight = false;
                     player.movingLeft = false;

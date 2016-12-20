@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import Job.Job;
+import Notification.Notification;
 import Player.Player;
 import Player.Variants;
 
@@ -24,7 +25,7 @@ public class Market {
     public Variants call;
     public Variants internet;
     public Vector2 touchpos;
-    public Texture texture,texture_snow;
+    public Texture texture, texture_snow;
     public float x;
     public float y;
     public float width;
@@ -33,6 +34,7 @@ public class Market {
     public boolean stealed = false;
     public ArrayList<Job> jobs;
     public boolean drawJobs = false;
+    public int jobIndex = 0;
     public Market(Player player) {
         onscreen = true;
         texture = new Texture(Gdx.files.internal("background/market.png"));
@@ -52,18 +54,26 @@ public class Market {
         call = new Variants(player.position.x + player.width + player.height / 4, go.y + go.height + go.height / 2, 8 * player.height / 4, "circles/call.png");
         internet = new Variants(call.x, Robb1.y, 8 * player.height / 4, "circles/internet.png");
         jobs = new ArrayList<Job>();
-        jobs.add(new Job(new Random().nextInt(4),x+width/2));
+        jobs.add(new Job(new Random().nextInt(4), x + width / 2));
     }
 
-    public void draw(SpriteBatch batch,boolean winter) {
-        if(winter){
+    public void draw(SpriteBatch batch, boolean winter) {
+        if (winter) {
             batch.draw(texture_snow, x, y, width, height);
-        }else {
+        } else {
             batch.draw(texture, x, y, width, height);
         }
-        if(drawJobs) {
-            for (int i = 0; i < jobs.size(); i++) {
-                jobs.get(i).draw(batch);
+        if (drawJobs) {
+            jobs.get(jobIndex).draw(batch);
+            if(jobs.get(jobIndex).choosed == 1){
+                jobs.remove(jobIndex);
+                drawJobs = false;
+            }else if(jobs.get(jobIndex).choosed == 0){
+                jobs.remove(jobIndex);
+                Background.situation = 12;
+                Notification.exists1 = true;
+                Notification.exists = true;
+                drawJobs = false;
             }
         }
     }
@@ -89,7 +99,7 @@ public class Market {
     }
 
     public void ontouch(float x, float width, float y, Arrows arrows) {
-        if(!drawJobs) {
+        if (!drawJobs) {
             if (Gdx.input.justTouched()) {
                 touchpos.x = Gdx.input.getX() + x - Gdx.graphics.getWidth() / 2 + width / 2;
                 touchpos.y = Gdx.input.getY();

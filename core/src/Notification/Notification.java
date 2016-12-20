@@ -45,11 +45,13 @@ public class Notification {
         notices.add(new Texture(Gdx.files.internal("notice/uni1.png")));
         notices.add(new Texture(Gdx.files.internal("notice/stole.png")));//4
         notices.add(new Texture(Gdx.files.internal("notice/purse.png")));//5
-        notices.add(new Texture(Gdx.files.internal("notice/safe.png")));//5
+        notices.add(new Texture(Gdx.files.internal("notice/safe.png")));//6
         notices.add(new Texture(Gdx.files.internal("notice/shot.png")));//7
         notices.add(new Texture(Gdx.files.internal("notice/broke.png")));//8
         notices.add(new Texture(Gdx.files.internal("notice/fridge.png")));//9
         notices.add(new Texture(Gdx.files.internal("notice/lost_money.png")));//10
+        notices.add(new Texture(Gdx.files.internal("notice/no_jobs.png")));
+        notices.add(new Texture(Gdx.files.internal("notice/got_job.png")));//12
         touchpos=new Vector2();
         generator=new FreeTypeFontGenerator(Gdx.files.internal("font/Roboto-Light.ttf"));
         parameter=new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -86,7 +88,7 @@ public class Notification {
                 touchpos.x = Gdx.input.getX() + x - Gdx.graphics.getWidth() / 2 + width / 2;
                 touchpos.y = Gdx.input.getY();
                 if (touchpos.x >= this.x && touchpos.x <= this.x + this.width && touchpos.y >= Gdx.graphics.getHeight() - this.height - this.y && touchpos.y <= Gdx.graphics.getHeight() - this.y) {
-                    if(situation==6 || situation==7){
+                    if(situation==6 || situation==7 || situation == 11 || situation == 12){
                         background.unpause_unlistened();
                     }else
                     background.moneyStolen=0;
