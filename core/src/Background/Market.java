@@ -35,6 +35,7 @@ public class Market {
     public ArrayList<Job> jobs;
     public boolean drawJobs = false;
     public int jobIndex = 0;
+
     public Market(Player player) {
         onscreen = true;
         texture = new Texture(Gdx.files.internal("background/market.png"));
@@ -54,7 +55,18 @@ public class Market {
         call = new Variants(player.position.x + player.width + player.height / 4, go.y + go.height + go.height / 2, 8 * player.height / 4, "circles/call.png");
         internet = new Variants(call.x, Robb1.y, 8 * player.height / 4, "circles/internet.png");
         jobs = new ArrayList<Job>();
-        jobs.add(new Job(new Random().nextInt(4), x + width / 2));
+        int a = new Random().nextInt(6);
+        int b = new Random().nextInt(6);
+        jobs.add(new Job(a, x + width / 2));
+        if (b != a)
+            jobs.add(new Job(b, x + width / 2));
+        else{
+            if (a>0){
+                jobs.add(new Job(a-1, x + width / 2));
+            }else{
+                jobs.add(new Job(a+1, x + width / 2));
+            }
+        }
     }
 
     public void draw(SpriteBatch batch, boolean winter) {
@@ -65,10 +77,11 @@ public class Market {
         }
         if (drawJobs) {
             jobs.get(jobIndex).draw(batch);
-            if(jobs.get(jobIndex).choosed == 1){
+            if (jobs.get(jobIndex).choosed == 1) {
                 jobs.remove(jobIndex);
-                drawJobs = false;
-            }else if(jobs.get(jobIndex).choosed == 0){
+                if (jobs.size() == 0)
+                    drawJobs = false;
+            } else if (jobs.get(jobIndex).choosed == 0) {
                 jobs.remove(jobIndex);
                 Background.situation = 12;
                 Notification.exists1 = true;

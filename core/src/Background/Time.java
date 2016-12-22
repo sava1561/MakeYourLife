@@ -143,6 +143,11 @@ public class Time {
             if (minute == 60) {
                 minute = 0;
                 hour++;
+                if(hour == 13){
+                    Lamp.on = true;
+                }else if (hour == 6){
+                    Lamp.on = false;
+                }
             }
             if (hour == 24) {
                 hour = 0;

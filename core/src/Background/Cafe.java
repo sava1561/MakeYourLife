@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Main;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import Job.Job;
+import Notification.Notification;
 import Player.Player;
 import Player.Variants;
 
@@ -28,6 +33,10 @@ public class Cafe {
     public float width;
     public float height;
     public boolean stealed=false;
+    public ArrayList<Job> jobs;
+    public boolean drawJobs = false;
+    public int jobIndex = 0;
+
     public Cafe(Player player,final Main main) {
         onscreen = true;
         texture = main.manager.get("background/cafe.png",Texture.class);
@@ -46,6 +55,20 @@ public class Cafe {
         Robb1 = new Variants(smoke.x, smoke.y + smoke.height + smoke.height / 2, 8 * player.height / 4, "background/robbMarket.png");
         call = new Variants(player.position.x + player.width + player.height / 4, go.y + go.height + go.height / 2, 8 * player.height / 4, "circles/call.png");
         internet = new Variants(call.x, Robb1.y, 8 * player.height / 4, "circles/internet.png");
+
+        jobs = new ArrayList<Job>();
+        int a = new Random().nextInt(3)+6;
+        int b = new Random().nextInt(3)+6;
+        jobs.add(new Job(a, x + width / 2));
+        if (b != a)
+            jobs.add(new Job(b, x + width / 2));
+        else{
+            if (a>0){
+                jobs.add(new Job(a-1, x + width / 2));
+            }else{
+                jobs.add(new Job(a+1, x + width / 2));
+            }
+        }
     }
 
     public void draw(SpriteBatch batch,boolean winter) {
@@ -53,6 +76,20 @@ public class Cafe {
             batch.draw(texture_snow, x, y, width, height);
         }else
         batch.draw(texture, x, y, width, height);
+        if (drawJobs) {
+            jobs.get(jobIndex).draw(batch);
+            if (jobs.get(jobIndex).choosed == 1) {
+                jobs.remove(jobIndex);
+                if (jobs.size() == 0)
+                    drawJobs = false;
+            } else if (jobs.get(jobIndex).choosed == 0) {
+                jobs.remove(jobIndex);
+                Background.situation = 12;
+                Notification.exists1 = true;
+                Notification.exists = true;
+                drawJobs = false;
+            }
+        }
     }
 
     public void update(float pos) {

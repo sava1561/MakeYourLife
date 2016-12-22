@@ -14,6 +14,7 @@ import Notification.Notification;
 import Player.*;
 import Player.PeopleVal;
 import Player.Player;
+import Support.Texture;
 import Weather.Weather;
 import roadActions.Bus;
 import roadActions.Car;
@@ -25,6 +26,7 @@ import roadActions.Car;
 //import roadActions.Bus;
 //
 public class Background {
+    public ArrayList<Lamp> lamps;
     public Random random;
     public int moneyStolen = 0, moneyStolen1;
     public static int situation;
@@ -76,6 +78,7 @@ public class Background {
     public Bar bar;
 
     public Background(final Main game) {
+        lamps = new ArrayList<Lamp>();
         timer1 = new Timer();
         timer2 = new Timer();
         random = new Random();
@@ -191,6 +194,13 @@ public class Background {
         sign[0] = new Sign(policeDep.x + policeDep.width);
         sign[1] = new Sign(-Gdx.graphics.getWidth() * 3 + Gdx.graphics.getWidth() / 2 - sign[0].width);
         n1 = new Notification();
+
+        lamps.add(new Lamp(home.position.x + 2 * home.width / 3));
+        lamps.add(new Lamp(market.x + market.width));
+        lamps.add(new Lamp(cafe.x + 3 * cafe.width / 2));
+        lamps.add(new Lamp(school.position.x + school.width));
+        lamps.add(new Lamp(fastFood.x + 2*fastFood.width/3));
+        lamps.add(new Lamp(hospital.position.x + hospital.width));
     }
 
     public float s_add = 0.2f;
@@ -523,12 +533,13 @@ public class Background {
             }
 //            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus)
 //                bus.ontouch(player.position.x, player.width, player.position.y, arrow);
-            if(market.drawJobs){
-                for (int i = 0; i < market.jobs.size(); i++) {
-                    market.jobs.get(i).ontouch(player.position.x, player.width, player.position.y);
-                }
+            if (market.drawJobs) {
+                market.jobs.get(0).ontouch(player.position.x, player.width, player.position.y);
             }
-            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital)
+            if (cafe.drawJobs) {
+                cafe.jobs.get(0).ontouch(player.position.x, player.width, player.position.y);
+            }
+            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital && !market.drawJobs)
                 market.ontouch(player.position.x, player.width, player.position.y, arrow);
             if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital)
                 hospital.ontouch(player.position.x, player.width, player.position.y, arrow);
@@ -580,7 +591,7 @@ public class Background {
                     player.varExist = false;
                 }
             }
-            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital)
+            if (!player.stealingFF && !player.stealingCafe && !player.stealingMarket && !player.inBus && !player.inHospital && !cafe.drawJobs)
                 cafe.ontouch(player.position.x, player.width, player.position.y, arrow);
             if (cafe.varExists) {
                 positionArrow.basY = cafe.y + cafe.height + positionArrow.height / 3;
@@ -742,6 +753,7 @@ public class Background {
                     player.index_dr = 0;
                     player.droppingcoffee = false;
                     market.drawJobs = false;
+                    cafe.drawJobs = false;
                     player.runningR = false;
                     player.runningL = false;
                     player.stealingMarket = false;
@@ -785,6 +797,7 @@ public class Background {
                     player.drinkTime = 0.15f;
                     player.sm_index = 0;
                     player.index_dr = 0;
+                    cafe.drawJobs = false;
                     player.droppingcoffee = false;
                     player.issmoking = false;
                     player.stealingMarket = false;
@@ -830,6 +843,7 @@ public class Background {
                         player.drinkTime = 0.15f;
                         player.sm_index = 0;
                         player.index_dr = 0;
+                        cafe.drawJobs = false;
                         market.drawJobs = false;
                         player.droppingcoffee = false;
                         player.issmoking = false;
@@ -871,6 +885,7 @@ public class Background {
                     player.drinkTime = 0.15f;
                     player.sm_index = 0;
                     player.index_dr = 0;
+                    cafe.drawJobs = false;
                     player.droppingcoffee = false;
                     player.issmoking = false;
                     player.runningR = false;
@@ -1076,6 +1091,14 @@ public class Background {
             }
         }
         error.draw(batch, error1);
+
+
+        for (int i = 0; i < skies.size(); i++) {
+            skies.get(i).drawFone(batch);
+        }
+        for (int i = 0; i < lamps.size(); i++) {
+            lamps.get(i).draw(batch);
+        }
         weather.draw(batch, camera, toppanel.pause);
         if (situation != 4 && situation != 5 && situation != 6)
             n1.draw(batch, situation);
@@ -1084,13 +1107,11 @@ public class Background {
                 n1.draw(batch, situation, moneyStolen1);
             n1.draw(batch, situation, moneyStolen);
         }
-        for (int i = 0; i < skies.size(); i++) {
-            skies.get(i).drawFone(batch);
-        }
         if (toppanel.pause) {
             toppanel.pause_menu.draw(batch);
         }
         tip.draw(batch, this);
+
         batch.end();
         if (!market.varExists && !cafe.varExists && !school.varExists && !fastFood.varExists && !home.varExists) {
             positionArrow.draw = false;
@@ -1663,52 +1684,105 @@ public class Background {
             market.job1.ontouch(player);
         }
         if (market.job.touched || market.job1.touched) {
-                market.varExists = false;
-                player.walking_r = false;
-                player.walking_l = false;
-                player.runningR = false;
-                player.runningL = false;
+            market.varExists = false;
+            player.walking_r = false;
+            player.walking_l = false;
+            player.runningR = false;
+            player.runningL = false;
+            player.movingRight = false;
+            player.movingLeft = false;
+            player.speed = 0;
+            player.speed1 = 0;
+            if (!variables.moving_market) {
+                arrow.previous = "middle";
+                direction = "middle";
+                variables.moving_market = true;
+            }
+            if (arrow.previous.equals("middle")) {
+                if (player.position.x < market.x + market.width / 2) {
+                    player.movingRight = true;
+                    arrow.previous = "right";
+                    arrow.change = false;
+                } else {
+                    player.movingLeft = true;
+                    arrow.previous = "left";
+                    arrow.change = false;
+                }
+            }
+            if (player.reachedMarket(market.x, market.width)) {
+                if (market.jobs.size() != 0) {
+                    market.drawJobs = true;
+                } else {
+                    situation = 11;
+                    Notification.exists = true;
+                    Notification.exists1 = true;
+                    pause();
+                }
+                arrow.previous = "middle";
                 player.movingRight = false;
                 player.movingLeft = false;
-                player.speed = 0;
-                player.speed1 = 0;
-                if (!variables.moving_market) {
-                    arrow.previous = "middle";
-                    direction = "middle";
-                    variables.moving_market = true;
+                market.varExists = false;
+                market.varExists = false;
+                cafe.varExists = false;
+                fastFood.varExists = false;
+                school.varExists = false;
+                home.varExists = false;
+                market.job.touched = false;
+                market.job1.touched = false;
+            }
+        }
+    }
+
+    public void jobCafe() {
+        if (cafe.varExists) {
+            cafe.job1.ontouch(player);
+        }
+        if (cafe.job.touched || cafe.job1.touched) {
+            cafe.varExists = false;
+            player.walking_r = false;
+            player.walking_l = false;
+            player.runningR = false;
+            player.runningL = false;
+            player.movingRight = false;
+            player.movingLeft = false;
+            player.speed = 0;
+            player.speed1 = 0;
+            if (!variables.moving_cafe) {
+                arrow.previous = "middle";
+                direction = "middle";
+                variables.moving_cafe = true;
+            }
+            if (arrow.previous.equals("middle")) {
+                if (player.position.x < cafe.x + cafe.width / 2) {
+                    player.movingRight = true;
+                    arrow.previous = "right";
+                    arrow.change = false;
+                } else {
+                    player.movingLeft = true;
+                    arrow.previous = "left";
+                    arrow.change = false;
                 }
-                if (arrow.previous.equals("middle")) {
-                    if (player.position.x < market.x + market.width / 2) {
-                        player.movingRight = true;
-                        arrow.previous = "right";
-                        arrow.change = false;
-                    } else {
-                        player.movingLeft = true;
-                        arrow.previous = "left";
-                        arrow.change = false;
-                    }
+            }
+            if (player.reachedCafe(cafe.x, cafe.width)) {
+                if (cafe.jobs.size() != 0) {
+                    cafe.drawJobs = true;
+                } else {
+                    situation = 11;
+                    Notification.exists = true;
+                    Notification.exists1 = true;
+                    pause();
                 }
-                if (player.reachedMarket(market.x, market.width)) {
-                    if(market.jobs.size() != 0) {
-                        market.drawJobs = true;
-                    }else{
-                        situation = 11;
-                        Notification.exists = true;
-                        Notification.exists1 = true;
-                        pause();
-                    }
-                    arrow.previous = "middle";
-                    player.movingRight = false;
-                    player.movingLeft = false;
-                    market.varExists = false;
-                    market.varExists = false;
-                    cafe.varExists = false;
-                    fastFood.varExists = false;
-                    school.varExists = false;
-                    home.varExists = false;
-                    market.job.touched = false;
-                    market.job1.touched = false;
-                }
+                arrow.previous = "middle";
+                player.movingRight = false;
+                player.movingLeft = false;
+                market.varExists = false;
+                cafe.varExists = false;
+                fastFood.varExists = false;
+                school.varExists = false;
+                home.varExists = false;
+                cafe.job.touched = false;
+                cafe.job1.touched = false;
+            }
         }
     }
 
@@ -2676,6 +2750,7 @@ public class Background {
                 buyFood3();
             }
             if (cafe.onscreen) {
+                jobCafe();
                 goCafe();
                 outCafe();
                 buyCoffee();
@@ -2804,7 +2879,7 @@ public class Background {
                             situation = 10;
                             Notification.exists = true;
                             Notification.exists1 = true;
-                            toppanel.money.money -= random.nextInt((int) (toppanel.money.money / 20)) + (int) (toppanel.money.money / 2);
+                            toppanel.money.money -= random.nextInt((int) (Math.abs(toppanel.money.money / 20))) + (int) (Math.abs(toppanel.money.money / 2));
                             toppanel.c_width -= toppanel.maxwidth / 6;
                             variables.lost_money = true;
                         }

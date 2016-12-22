@@ -472,10 +472,10 @@ public class Player {
             public void run() {
                 if (!withFood) {
                     width = Gdx.graphics.getWidth() / 23;
-                    texture = anim.get(index);
                     if (index < anim.size() - 1) {
                         index++;
                     } else index = 0;
+                    texture = anim.get(index);
                     walkRight();
                 } else {
                     texture = withFood1.get(index);

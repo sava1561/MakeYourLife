@@ -11,7 +11,7 @@ import Support.Texture;
  */
 public class Job {
     public Texture texture;
-    public int type = -1; //0-кассир1 1-кассир2 2-кассир3 3-кассир4
+    public int type = -1; //0-кассир1 1-кассир2 2-кассир3 3-кассир4 4-уборщик1 5-уборщик2 6-бариста 7 - уборщик1 8 - уборщик2
     public int choosed = -1;//-1-defaul 0-yes 1-no
     public Job(int type, float x) {
         this.type = type;
